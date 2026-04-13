@@ -2,6 +2,7 @@ services:
   tidb:
     image: pingcap/tidb:v8.5.0
     container_name: mnemos-tidb
+    restart: unless-stopped
     ports:
       - "4000:4000"
     volumes:
@@ -32,9 +33,9 @@ services:
       - MNEMO_EMBED_API_KEY=sk-ochaefpucoxtjkjbifdcwdldpkkjnqvrhzracrixcvjvmkcl
       - MNEMO_EMBED_MODEL=Qwen/Qwen3-Embedding-8B
       - MNEMO_EMBED_DIMS=4096
-      - MNEMO_LLM_API_KEY=
-      - MNEMO_LLM_BASE_URL=
-      - MNEMO_LLM_MODEL=
+      - MNEMO_LLM_API_KEY=dummy
+      - MNEMO_LLM_BASE_URL=http://172.17.0.1:11435
+      - MNEMO_LLM_MODEL=claude-haiku-4.5
     command: ["/mnemo-server"]
     restart: unless-stopped
 
