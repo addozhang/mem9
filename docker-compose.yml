@@ -1,0 +1,42 @@
+services:
+  tidb:
+    image: pingcap/tidb:v8.5.0
+    container_name: mnemos-tidb
+    ports:
+      - "4000:4000"
+    volumes:
+      - tidb-data:/tmp/tidb
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:10080/status 2>/dev/null | grep -q 'connections' && exit 0 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
+  mnemo-server:
+    image: alpine:3.19
+    container_name: mnemos-server
+    depends_on:
+      tidb:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./server/bin/mnemo-server:/mnemo-server
+    environment:
+      - MNEMO_DSN=root:@tcp(tidb:4000)/mnemos?parseTime=true
+      - MNEMO_PROVIDER=local
+      - MNEMO_INGEST_MODE=raw
+      - MNEMO_TIDB_ZERO_ENABLED=false
+      - MNEMO_EMBED_BASE_URL=https://api.siliconflow.cn/v1
+      - MNEMO_EMBED_API_KEY=sk-ochaefpucoxtjkjbifdcwdldpkkjnqvrhzracrixcvjvmkcl
+      - MNEMO_EMBED_MODEL=Qwen/Qwen3-Embedding-8B
+      - MNEMO_EMBED_DIMS=4096
+      - MNEMO_LLM_API_KEY=
+      - MNEMO_LLM_BASE_URL=
+      - MNEMO_LLM_MODEL=
+    command: ["/mnemo-server"]
+    restart: unless-stopped
+
+volumes:
+  tidb-data:

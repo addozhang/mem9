@@ -198,6 +198,10 @@ func (s *Server) ingestMessages(ctx context.Context, auth *domain.AuthInfo, svc 
 	bulkCreateDuration = time.Since(bulkCreateStart)
 
 	extractPhase1Start := time.Now()
+	// If mode is raw or no LLM configured, skip LLM extraction and use service Ingest path.
+	if req.Mode == service.ModeRaw || !svc.ingest.HasLLM() {
+		return svc.ingest.Ingest(ctx, auth.AgentName, req)
+	}
 	phase1, err := svc.ingest.ExtractPhase1(ctx, req.Messages)
 	extractPhase1Duration = time.Since(extractPhase1Start)
 	if err != nil {

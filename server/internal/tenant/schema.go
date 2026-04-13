@@ -98,7 +98,7 @@ func BuildMemorySchema(autoModel string, autoDims int) string {
 			autoDims, sanitizedModel, autoDims,
 		)
 	} else {
-		embeddingCol = `embedding VECTOR(1536) NULL,`
+		embeddingCol = `embedding VECTOR(4096) NULL,`
 	}
 	return fmt.Sprintf(TenantMemorySchemaBase, embeddingCol)
 }
@@ -113,7 +113,7 @@ func BuildDB9MemorySchema(autoModel string, autoDims int) string {
 			autoDims, sanitizedModel, autoDims,
 		)
 	} else {
-		embeddingCol = `embedding VECTOR(1536) NULL,`
+		embeddingCol = `embedding VECTOR(4096) NULL,`
 	}
 	return fmt.Sprintf(TenantMemorySchemaDB9Base, embeddingCol)
 }
@@ -150,7 +150,7 @@ func BuildSessionsSchema(autoModel string, autoDims int) string {
 			autoDims, sanitizedModel, autoDims,
 		)
 	} else {
-		embeddingCol = `embedding VECTOR(1536) NULL,`
+		embeddingCol = `embedding VECTOR(4096) NULL,`
 	}
 	return fmt.Sprintf(TenantSessionsSchemaBase, embeddingCol)
 }
